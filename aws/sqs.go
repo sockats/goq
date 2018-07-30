@@ -140,15 +140,6 @@ func getQueue(conf Config, sess *session.Session, sc *sqs.SQS) (*string, error) 
 	if err != nil {
 		return nil, err
 	}
-	// No topic set, so we don't have to create the subscription here
-	if conf.TopicArn == nil {
-		return out.QueueUrl, nil
-	}
-	arn, err := getQueueArn(sc, out.QueueUrl)
-	if err := subscribeQueue(sess, conf.TopicArn, arn); err != nil {
-		log.Errorf("Failed to subscribe queue %s to topic: %+v", *out.QueueUrl, err)
-		return nil, err
-	}
 	return out.QueueUrl, nil
 }
 func (s *subSQS) Start(ctx context.Context) <-chan goq.BaseMsg {
